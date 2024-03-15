@@ -48,18 +48,12 @@ This project involves refactoring an existing application infrastructure to leve
 
 By following the steps outlined above, the application infrastructure can be successfully refactored using Elastic Beanstalk and other AWS services. This approach offers scalability, reliability, and security benefits, allowing for efficient management and operation of the application in the cloud.
 
-# Database
-Here,we used Mysql DB 
-sql dump file:
-
-git clone -b aws-refactor-beanstalk https://github.com/seunayolu/devopsproject.git
-
-- db_backup.sql file is a mysql dump file we have to import this dump to mysql db server
-
+## Database
 - Setup an Ubuntu EC2 instance in the public subnet to serve as a bastion host to connect the the RDS instance. SSH into the EC2 and run the command below to install mysql client and import the database dump into RDS.
 
 ```
-sudo apt update && apt install mysql-client
+sudo apt update && apt install mysql-client -y
+git clone -b aws-refactor-beanstalk https://github.com/seunayolu/devopsproject.git
 cd devopsproject
 mysql -h <database_endpoint> -u <user_name> -p<password> <database_name> < src/main/resources/db_backup.sql
 ```
