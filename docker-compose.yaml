@@ -19,6 +19,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin
+    container_name: phpmyadmin
     restart: always
     ports:
       - "8081:80"
@@ -52,7 +53,7 @@ services:
 
   devcloudapp:
     build:
-      context: ./Docker-files/app/multistage
+      context: ./Docker-files/app
     container_name: devcloudapp
     image: oluwaseuna/devcloudapp
     ports:

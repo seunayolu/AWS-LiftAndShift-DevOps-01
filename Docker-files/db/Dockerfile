@@ -1,6 +1,6 @@
 FROM mysql:8.0.33
-LABEL "Project"="Vprofile"
-LABEL "Author"="Imran"
+LABEL "Project"="devopsproject"
+LABEL "Author"="seunayolu"
 
 ENV MYSQL_ROOT_PASSWORD="devclouddbpass"
 ENV MYSQL_DATABASE="accounts"
