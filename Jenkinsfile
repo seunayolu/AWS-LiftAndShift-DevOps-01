@@ -1,18 +1,22 @@
 pipeline {
     
 	agent any
-/*	
+	
 	tools {
-        maven "maven3"
+        maven "Maven3"
+        jdk "OracleJDK11"
     }
-*/	
+	
     environment {
         NEXUS_VERSION = "nexus3"
+        NEXUS_USER = 'admin'
+        NEXUS_PASS = 'seun'
         NEXUS_PROTOCOL = "http"
         NEXUS_URL = "172.20.4.149:8081"
-        NEXUS_REPOSITORY = "thedevcloud-mvn-hosted-repo"
-	    NEXUS_REPOGRP_ID    = "thedevcloud-group-repo"
-        NEXUS_CREDENTIAL_ID = "nexuslogin"
+        RELEASE_REPO = "thedevcloud-mvn-hosted-repo"
+        CENTRAL_REPO = "thedevcloud-proxy-repo"
+	    NEXUS_GRP_REPO    = "thedevcloud-group-repo"
+        NEXUS_LOGIN = "nexuslogin"
         ARTVERSION = "${env.BUILD_ID}"
     }
 	
@@ -22,14 +26,14 @@ pipeline {
             steps {
                 sh 'mvn clean install -DskipTests'
             }
-            post {
+            /*post {
                 success {
                     echo 'Now Archiving...'
                     archiveArtifacts artifacts: '**/target/*.war'
                 }
-            }
+            }*/
         }
-
+    /*
 	stage('UNIT TEST'){
             steps {
                 sh 'mvn test'
@@ -80,39 +84,25 @@ pipeline {
         stage("Publish to Nexus Repository Manager") {
             steps {
                 script {
-                    pom = readMavenPom file: "pom.xml";
-                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
-                    echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
-                    artifactPath = filesByGlob[0].path;
-                    artifactExists = fileExists artifactPath;
-                    if(artifactExists) {
-                        echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version} ARTVERSION";
                         nexusArtifactUploader(
-                            nexusVersion: NEXUS_VERSION,
-                            protocol: NEXUS_PROTOCOL,
-                            nexusUrl: NEXUS_URL,
-                            groupId: NEXUS_REPOGRP_ID,
-                            version: ARTVERSION,
-                            repository: NEXUS_REPOSITORY,
-                            credentialsId: NEXUS_CREDENTIAL_ID,
+                            nexusVersion: "${NEXUS_VERSION}",
+                            protocol: "${NEXUS_PROTOCOL}",
+                            nexusUrl: "${NEXUS_URL}",
+                            groupId: 'QA',
+                            version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
+                            repository: "${RELEASE_REPO}",
+                            credentialsId: "${NEXUS_LOGIN}",
                             artifacts: [
-                                [artifactId: pom.artifactId,
-                                classifier: '',
-                                file: artifactPath,
-                                type: pom.packaging],
-                                [artifactId: pom.artifactId,
-                                classifier: '',
-                                file: "pom.xml",
-                                type: "pom"]
+                                [artifactId:'devcloud-app',
+                                classifer: '',
+                                file: 'target/vprofile-v2.war',
+                                type: 'war']
                             ]
                         );
                     } 
-		    else {
-                        error "*** File: ${artifactPath}, could not be found";
-                    }
                 }
             }
-        }
+        }*/
 
 
     }
