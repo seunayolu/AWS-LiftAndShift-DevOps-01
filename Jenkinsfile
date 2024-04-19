@@ -12,7 +12,8 @@ pipeline {
         NEXUS_USER = 'admin'
         NEXUS_PASS = 'seun'
         NEXUS_PROTOCOL = "http"
-        NEXUS_URL = "172.20.4.149:8081"
+        NEXUSIP = "172.20.4.149"
+        NEXUSPORT = '8081'
         RELEASE_REPO = "thedevcloud-mvn-hosted-repo"
         CENTRAL_REPO = "thedevcloud-proxy-repo"
 	    NEXUS_GRP_REPO    = "thedevcloud-group-repo"
