@@ -9,7 +9,7 @@ env:
 phases:
   install:
     runtime-versions:
-      java: corretto11
+      java: corretto17
     commands:
     - cp ./settings.xml /root/.m2/settings.xml
     - export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain thedevcloud --domain-owner 767398114306 --region eu-west-2 --query authorizationToken --output text`
@@ -27,9 +27,9 @@ phases:
     commands:
       - mvn test
       - mvn checkstyle:checkstyle
-      - echo "Installing JDK11 as its a dependency for sonarqube code analysis"
-      - apt-get update -y && apt install openjdk-11-jre-headless -y
-      - export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+      - echo "Installing JDK17 as its a dependency for sonarqube code analysis"
+      - apt-get update -y && apt install openjdk-17-jdk -y
+      - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
       - mvn sonar:sonar -Dsonar.login=$LOGIN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project -Dsonar.organization=$Organization -Dsonar.java.binaries=target/test-classes/com/visualpathit/account/controllerTest/ -Dsonar.junit.reportsPath=target/surefire-reports/ -Dsonar.jacoco.reportsPath=target/jacoco.exec -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml
       - sleep 5
       - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$Project >result.json
