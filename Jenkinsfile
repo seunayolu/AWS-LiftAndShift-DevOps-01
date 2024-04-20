@@ -16,7 +16,7 @@ pipeline {
         NEXUSPORT = '8081'
         RELEASE_REPO = "thedev-repo-1"
         CENTRAL_REPO = "thedevcloud-proxy-repo"
-	    NEXUS_GRP_REPO    = "thedevcloud-repo-grp"
+	    NEXUS_GRP_REPO    = "devcloud-grp-repo"
         NEXUS_LOGIN = "nexuslogin"
         ARTVERSION = "${env.BUILD_ID}"
     }
