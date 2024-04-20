@@ -12,11 +12,11 @@ pipeline {
         NEXUS_USER = 'admin'
         NEXUS_PASS = 'seun'
         NEXUS_PROTOCOL = "http"
-        NEXUSIP = "172.20.4.149"
+        NEXUSIP = "172.31.46.214"
         NEXUSPORT = '8081'
-        RELEASE_REPO = "thedevcloud-mvn-hosted-repo"
-        CENTRAL_REPO = "thedevcloud-proxy-repo"
-	    NEXUS_GRP_REPO    = "thedevcloud-group-repo"
+        RELEASE_REPO = "thedev-repo-1"
+        CENTRAL_REPO = "teh-devcloud-proxy"
+	    NEXUS_GRP_REPO    = "thedevcloud-repo-grp"
         NEXUS_LOGIN = "nexuslogin"
         ARTVERSION = "${env.BUILD_ID}"
     }
