@@ -18,7 +18,7 @@ pipeline {
         CENTRAL_REPO = "thedevcloud-proxy-repo"
 	    NEXUS_GRP_REPO    = "thedevcloud-group-repo"
         NEXUS_LOGIN = "nexuslogin"
-        ARTVERSION = "${env.BUILD_ID}"
+        ARTVERSION = "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}"
     }
 	
     stages{
@@ -80,6 +80,28 @@ pipeline {
                waitForQualityGate abortPipeline: true
             }
           }
-        }   
+        }
+
+        stage("Publish to Nexus Repository Manager") {
+            steps {
+                script {
+                    nexusArtifactUploader(
+                            nexusVersion: "${NEXUS_VERSION}",
+                            protocol: "${NEXUS_PROTOCOL}",
+                            nexusUrl: "${NEXUSIP}:${NEXUSPORT}",
+                            groupId: 'QA',
+                            version: "${ARTVERSION}",
+                            repository: "${RELEASE_REPO}",
+                            credentialsId: "${NEXUS_LOGIN}",
+                            artifacts: [
+                                [artifactId: 'thedevcloudapp',
+                                 classifier: '',
+                                 file: 'target/vprofile-v2.war',
+                                 type: 'war']
+                            ]
+                        )
+                }
+            }
+        }
     }
 }
