@@ -12,11 +12,11 @@ pipeline {
         NEXUS_USER = 'admin'
         NEXUS_PASS = 'seun'
         NEXUS_PROTOCOL = "http"
-        NEXUSIP = "172.31.46.214"
+        NEXUSIP = "172.20.4.149"
         NEXUSPORT = '8081'
-        RELEASE_REPO = "thedev-repo-1"
+        RELEASE_REPO = "thedevcloud-mvn-hosted-repo"
         CENTRAL_REPO = "thedevcloud-proxy-repo"
-	    NEXUS_GRP_REPO    = "devcloud-grp-repo"
+	    NEXUS_GRP_REPO    = "thedevcloud-group-repo"
         NEXUS_LOGIN = "nexuslogin"
         ARTVERSION = "${env.BUILD_ID}"
     }
@@ -26,6 +26,12 @@ pipeline {
         stage('BUILD'){
             steps {
                 sh 'mvn -s settings.xml clean install -DskipTests'
+            }
+            post {
+                success {
+                    echo 'Now Archiving...'
+                    archiveArtifacts artifacts: '**/target/*.war'
+                }
             }
         }   
     }
