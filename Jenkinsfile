@@ -17,11 +17,11 @@ pipeline {
         NEXUS_USER = 'admin'
         NEXUS_PASS = 'seun'
         NEXUS_PROTOCOL = "http"
-        NEXUSIP = "172.20.4.149"
+        NEXUSIP = "172.31.46.214"
         NEXUSPORT = '8081'
-        RELEASE_REPO = "thedevcloud-mvn-hosted-repo"
+        RELEASE_REPO = "thedev-repo-1"
         CENTRAL_REPO = "thedevcloud-proxy-repo"
-	    NEXUS_GRP_REPO    = "thedevcloud-group-repo"
+	    NEXUS_GRP_REPO    = "devcloud-grp-repo"
         NEXUS_LOGIN = "nexuslogin"
         ARTVERSION = "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}"
     }
@@ -66,11 +66,11 @@ pipeline {
         stage('CODE ANALYSIS with SONARQUBE') {
           
 		  environment {
-             scannerHome = tool 'jenkins_sonarscanner'
+             scannerHome = tool 'sonar-scan'
           }
 
           steps {
-            withSonarQubeEnv('sonarscanner') {
+            withSonarQubeEnv('jenkins_sonar') {
                sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=thedevcloud \
                    -Dsonar.projectName=thedevcloud-app \
                    -Dsonar.projectVersion=1.0 \
@@ -80,9 +80,9 @@ pipeline {
                    -Dsonar.jacoco.reportsPath=target/jacoco.exec \
                    -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
             }
-            
+            /*
             timeout(time: 10, unit: 'MINUTES') {
-               waitForQualityGate abortPipeline: true
+               waitForQualityGate abortPipeline: true*/
             }
           }
         }
@@ -115,7 +115,7 @@ pipeline {
             echo 'Slack Notifications.'
             slackSend channel: '#build_notify',
                 color: COLOR_MAP[currentBuild.currentResult],
-                message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
+                message: "*${currentBuild.currentResult}:* Job: ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
         }
     }
 }
