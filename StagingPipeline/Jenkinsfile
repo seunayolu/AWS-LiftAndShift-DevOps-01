@@ -28,7 +28,7 @@ pipeline {
 	
     stages{
         
-        stage('BUILD'){
+        stage('Build'){
             steps {
                 sh 'mvn -s settings.xml clean install -DskipTests'
             }
@@ -40,19 +40,19 @@ pipeline {
             }
         }
 
-        stage('UNIT TEST'){
+        stage('Unit Test'){
             steps {
                 sh 'mvn -s settings.xml test'
             }
         }
 
-	    stage('INTEGRATION TEST'){
+	    stage('Integration Test'){
             steps {
                 sh 'mvn -s settings.xml verify -DskipUnitTests'
             }
         }
 		
-        stage ('CODE ANALYSIS WITH CHECKSTYLE'){
+        stage ('Checkstyle: Code Analysis'){
             steps {
                 sh 'mvn -s settings.xml checkstyle:checkstyle'
             }
@@ -63,7 +63,7 @@ pipeline {
             }
         }
 
-        stage('CODE ANALYSIS with SONARQUBE') {
+        stage('SonarQube: Code Analysis') {
           
 		  environment {
              scannerHome = tool 'sonar-scan'
@@ -79,15 +79,19 @@ pipeline {
                    -Dsonar.junit.reportsPath=target/surefire-reports/ \
                    -Dsonar.jacoco.reportsPath=target/jacoco.exec \
                    -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
+                } 
             }
-            
-            timeout(time: 10, unit: 'MINUTES') {
-               waitForQualityGate abortPipeline: true
-            }
-          }
         }
 
-        stage("Publish to Nexus Repository Manager") {
+        stage ("Quality Gate") {
+            steps {
+                timeout(time: 10, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }   
+            }
+        }
+
+        stage("ArtifactUpload: Nexus Repo") {
             steps {
                 script {
                     nexusArtifactUploader(
