@@ -24,6 +24,11 @@ pipeline {
 	    NEXUS_GRP_REPO    = "devcloud-grp-repo"
         NEXUS_LOGIN = "nexuslogin"
         ARTVERSION = "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}"
+        registryCredential = 'ecr:us-west-1:awscreds'
+        appRegistry = '951401132355.dkr.ecr.us-west-1.amazonaws.com/vprofileappimg'
+        thedevcloudReg = "https://951401132355.dkr.ecr.us-west-1.amazonaws.com"
+        cluster = "thedevcloud-staging-ecs"
+        service = "thedevcloud-staging-app-svc"
     }
 	
     stages{
@@ -109,6 +114,35 @@ pipeline {
                                  type: 'war']
                             ]
                         )
+                }
+            }
+        }
+
+        stage ('Build App Image') {
+            steps {
+                script {
+                    dockerImage = docker.build( appRegistry + ":$BUILD_NUMBER", "./Docker-files/app/")
+                }
+            }
+        }
+
+        stage ('upload app image to ecr') {
+            steps {
+                script {
+                    docker.withRegistry( thedevcloudReg, registryCredential ) {
+                        dockerImage.push("$BUILD_NUMBER")
+                        dockerImage.push('latest')
+                    }
+                }
+            }
+        }
+
+        stage ('Deploy to ecs staging') {
+            steps {
+                script {
+                    withAWS(credentials: 'awscreds', region: 'eu-west-2') {
+                        sh 'aws ecs update-service --cluster ${cluster} --service ${service} --force-new-deployment'
+                    }
                 }
             }
         }
